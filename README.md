@@ -41,6 +41,8 @@
 ### 🔐 Authentication & Security
 - **Complete Auth System**: Login and registration pages with validation
 - **JWT Authentication**: Secure user authentication and session management
+- **Email Verification**: Complete email verification flow with resend functionality
+- **Password Reset**: Forgot password and reset password functionality
 - **Protected Routes**: Automatic redirects for unauthorized access
 - **Password Security**: bcryptjs password hashing
 - **Session Persistence**: Secure token storage with automatic renewal
@@ -49,7 +51,10 @@
 ### 💰 Financial Management
 - **Multi-Payment Deposit**: Support for cards, crypto, bank transfers, and e-wallets
 - **Secure Withdrawals**: KYC-verified withdrawals with balance validation
-- **Transaction History**: Complete audit trail of all transactions
+- **Transaction History**: Complete audit trail of all transactions with filtering and search
+- **Transaction Filtering**: Filter by type (deposit, withdrawal, bet, win) and status
+- **Transaction Search**: Search transactions by description, amount, or type
+- **Pagination**: Easy navigation through transaction history
 - **Balance Tracking**: Real-time balance updates
 - **Deposit Limits**: Configurable limits per payment method
 - **Quick Actions**: Fast deposit/withdrawal from dashboard
@@ -57,11 +62,11 @@
 ### 🎯 Casino Features
 - **User Management**: Registration, profiles, and account settings
 - **Game Catalog**: Comprehensive game database with metadata and categories
+- **Favorite Games**: Add/remove games to favorites with dedicated favorites page
+- **Favorite Management**: View and manage all favorite games in one place
 - **Promotions Engine**: Flexible promotion and bonus system with eligibility rules
 - **VIP System**: Multi-tier loyalty program (Bronze, Silver, Gold, Platinum)
 - **Responsible Gaming**: Deposit limits, loss limits, and self-exclusion options
-- **Favorites**: Personal game collections (backend API implemented)
-- **Email Verification**: User email verification system (backend API implemented)
 
 ## 🛠️ Technology Stack
 
@@ -214,6 +219,9 @@ Cassanova/
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - User login
 - `GET /api/auth/verify/:token` - Email verification
+- `POST /api/auth/resend-verification` - Resend verification email
+- `POST /api/auth/forgot-password` - Request password reset
+- `POST /api/auth/reset-password` - Reset password with token
 
 ### Games
 - `GET /api/games` - List all games (with filters)
@@ -245,12 +253,18 @@ For complete API documentation, see [API_REFERENCE.md](docs/API_REFERENCE.md).
 - `/` - Homepage with game lobby and promotions
 - `/login` - User login page
 - `/register` - User registration page
+- `/forgot-password` - Request password reset link
+- `/reset-password` - Reset password with token
+- `/verify-email` - Email verification page
 - `/games/[slug]` - Game detail pages (dynamic)
 - `/promotions/[slug]` - Promotion detail pages (dynamic)
 - `/demo` - Demo page
 
 ### Protected Routes (Require Authentication)
-- `/dashboard` - User dashboard with account overview and transactions
+- `/dashboard` - User dashboard with account overview, transaction filtering, and search
+- `/favorites` - View and manage favorite games
+- `/deposit` - Deposit funds with multiple payment methods
+- `/withdraw` - Withdraw funds with KYC verification
 - `/deposit` - Deposit funds with multiple payment methods
 - `/withdraw` - Withdraw funds with KYC verification
 
@@ -318,12 +332,12 @@ We welcome contributions! Please see our [Contributing Guidelines](docs/CONTRIBU
 ### 🚀 Upcoming Features
 
 #### Short Term
-- [ ] Email verification UI flow (frontend integration)
-- [ ] Password reset functionality
+- [x] Email verification UI flow (frontend integration)
+- [x] Password reset functionality
+- [x] Transaction filtering and search
+- [x] Favorite games management UI (frontend)
 - [ ] KYC document upload interface (frontend)
 - [ ] Two-factor authentication
-- [ ] Transaction filtering and search
-- [ ] Favorite games management UI (frontend)
 
 #### Medium Term
 - [ ] Real payment provider integration
