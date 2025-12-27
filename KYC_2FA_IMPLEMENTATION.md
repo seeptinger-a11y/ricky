@@ -233,7 +233,7 @@ December 27, 2024
 
 ## Production Readiness
 
-All implemented features are production-ready:
+All implemented features are production-ready with the following considerations:
 - ✅ Clean, maintainable code
 - ✅ Comprehensive error handling
 - ✅ Security best practices followed
@@ -244,6 +244,12 @@ All implemented features are production-ready:
 - ✅ Full TypeScript typing
 - ✅ Industry-standard 2FA implementation
 - ✅ Clear user guidance and documentation
+
+### Production Deployment Recommendations
+- ⚠️ **Rate Limiting**: Add rate limiting to all authentication and sensitive endpoints to prevent brute force attacks. Consider using `express-rate-limit` package.
+- ⚠️ **File Storage**: Migrate KYC document storage from database to dedicated file storage service (AWS S3, Cloudinary, etc.) for better scalability.
+- ✅ **HTTPS**: Ensure all traffic uses HTTPS in production (already required for TOTP to work reliably).
+- ✅ **Environment Variables**: Ensure all secrets (JWT_SECRET, database credentials) are properly configured.
 
 ## User Experience
 
