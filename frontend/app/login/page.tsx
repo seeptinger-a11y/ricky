@@ -14,6 +14,8 @@ function LoginForm() {
     email: '',
     password: '',
   });
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showVerificationNotice, setShowVerificationNotice] = useState(false);
@@ -33,9 +35,14 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      const response = await api.auth.login(formData);
+      const credentials = requiresTwoFactor
+        ? { ...formData, twoFactorCode }
+        : formData;
+      const response = await api.auth.login(credentials);
 
-      if (response.token) {
+      if (response.requiresTwoFactor) {
+        setRequiresTwoFactor(true);
+      } else if (response.token) {
         login(response.token, response.user);
         router.push('/dashboard');
       } else {
@@ -81,58 +88,94 @@ function LoginForm() {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all"
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all"
-                placeholder="Enter your password"
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
+            {requiresTwoFactor ? (
+              <div>
+                <div className="bg-blue-500/20 border border-blue-500 text-blue-200 px-4 py-3 rounded-lg mb-4">
+                  <p className="font-semibold mb-1">Two-Factor Authentication Required</p>
+                  <p className="text-sm">Enter the 6-digit code from your authenticator app or a backup code.</p>
+                </div>
+                <label htmlFor="twoFactorCode" className="block text-sm font-medium text-gray-300 mb-2">
+                  Authentication Code
+                </label>
                 <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded bg-gray-700 border-gray-600 text-yellow-400 focus:ring-yellow-400"
+                  id="twoFactorCode"
+                  name="twoFactorCode"
+                  type="text"
+                  required
+                  autoComplete="one-time-code"
+                  value={twoFactorCode}
+                  onChange={(e) => setTwoFactorCode(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all tracking-widest text-center text-xl"
+                  placeholder="000000"
+                  maxLength={8}
                 />
-                <span className="ml-2 text-sm text-gray-300">Remember me</span>
-              </label>
-              <Link href="/forgot-password" className="text-sm text-yellow-400 hover:text-yellow-300">
-                Forgot password?
-              </Link>
-            </div>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all"
+                    placeholder="Enter your email"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all"
+                    placeholder="Enter your password"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 rounded bg-gray-700 border-gray-600 text-yellow-400 focus:ring-yellow-400"
+                    />
+                    <span className="ml-2 text-sm text-gray-300">Remember me</span>
+                  </label>
+                  <Link href="/forgot-password" className="text-sm text-yellow-400 hover:text-yellow-300">
+                    Forgot password?
+                  </Link>
+                </div>
+              </>
+            )}
 
             <button
               type="submit"
               disabled={isLoading}
               className="w-full py-3 px-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-gray-900 font-bold rounded-lg hover:from-yellow-500 hover:to-yellow-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? 'Logging in...' : requiresTwoFactor ? 'Verify Code' : 'Login'}
             </button>
+
+            {requiresTwoFactor && (
+              <button
+                type="button"
+                onClick={() => { setRequiresTwoFactor(false); setTwoFactorCode(''); setError(''); }}
+                className="w-full py-2 px-4 text-gray-400 hover:text-gray-200 text-sm transition-all"
+              >
+                ← Back to login
+              </button>
+            )}
           </form>
 
           {/* Divider */}
