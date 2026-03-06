@@ -121,7 +121,7 @@ function KYCPageContent() {
           } else {
             setError('Failed to upload document. Please try again.');
           }
-        } catch (err) {
+        } catch {
           setError('Failed to upload document. Please try again.');
         } finally {
           setUploading(false);
@@ -129,7 +129,7 @@ function KYCPageContent() {
       };
       
       reader.readAsDataURL(selectedFile);
-    } catch (err) {
+    } catch {
       setError('Failed to process file. Please try again.');
       setUploading(false);
     }

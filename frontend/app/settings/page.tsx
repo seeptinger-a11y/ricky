@@ -59,7 +59,7 @@ function SettingsPageContent() {
       } else {
         setError(response.message || 'Failed to setup 2FA');
       }
-    } catch (err) {
+    } catch {
       setError('Failed to setup 2FA. Please try again.');
     } finally {
       setLoading(false);
@@ -92,7 +92,7 @@ function SettingsPageContent() {
       } else {
         setError(response.message || 'Invalid verification code');
       }
-    } catch (err) {
+    } catch {
       setError('Failed to verify code. Please try again.');
     } finally {
       setLoading(false);
@@ -120,7 +120,7 @@ function SettingsPageContent() {
       } else {
         setError(response.message || 'Failed to disable 2FA');
       }
-    } catch (err) {
+    } catch {
       setError('Failed to disable 2FA. Please check your password.');
     } finally {
       setLoading(false);
