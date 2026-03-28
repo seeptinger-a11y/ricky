@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/rain/distribute",
+      "schedule": "0,30 * * * *"
+    }
+  ]
+}
